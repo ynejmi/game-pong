@@ -17,8 +17,6 @@ const config = {
 
 const game = new Phaser.Game(config);
 
-console.log(game);
-
 function preload() {
   this.load.image("paddle", "./assets/paddle.png");
   this.load.image("ball", "./assets/small_ball.png");
@@ -28,6 +26,7 @@ let paddle1;
 let paddle2;
 let ball;
 let scene;
+let startText;
 let gameStarted = false;
 let width, height;
 let centerY;
@@ -36,9 +35,11 @@ let paddleUpperLimit; //temp
 let paddleLowerLimit;
 
 const create_paddle = (x, y) => {
-  const paddle = scene.physics.add.sprite(x, y, "paddle");
-  paddle.setImmovable(true);
-
+  const paddle = scene.physics.add.sprite(x, y, "paddle").setImmovable(true);
+  // .setOrigin(0.5);
+  scene.physics.add.collider(ball, paddle, (ball) =>
+    console.log(ball.body.velocity.x)
+  );
   return paddle;
 };
 
@@ -50,11 +51,11 @@ function create() {
   centerX = width / 2;
   centerY = height / 2;
 
-  ball = scene.physics.add.sprite(centerX, centerY, "ball");
-  ball.setCollideWorldBounds(true);
-  ball.setBounce(1, 1);
-
-  console.log(ball);
+  ball = scene.physics.add
+    .sprite(centerX, centerY, "ball")
+    .setCollideWorldBounds(true)
+    .setBounce(1.01, 1);
+  // .setOrigin(0.5);
 
   paddle1 = create_paddle(48, centerY);
   paddle2 = create_paddle(window.innerWidth - 48, centerY);
@@ -62,8 +63,13 @@ function create() {
   paddleUpperLimit = paddle1.height / 2;
   paddleLowerLimit = height - paddleUpperLimit;
 
-  scene.physics.add.collider(ball, paddle1);
-  scene.physics.add.collider(ball, paddle2);
+  style = { fontSize: "80px", align: "center" };
+
+  startText = scene.add
+    .text(centerX, centerY / 2, "Press Space\nto Start Game", style)
+    .setOrigin(0.5);
+
+  console.log(startText);
 }
 
 const control_paddle = (paddle, y) => {
@@ -71,18 +77,45 @@ const control_paddle = (paddle, y) => {
   else if (y < paddleUpperLimit) paddle.y = paddleUpperLimit;
   else if (y > paddleLowerLimit) paddle.y = paddleLowerLimit;
   else paddle.y = y;
-
-  console.log(paddle.body.velocity.y);
 };
 
 const startGame = () => {
+  if (gameStarted) return;
   gameStarted = true;
+  startText.visible = false;
   console.log("GAME START");
   ball.setVelocity(500, 500);
 };
 
+const stopGame = () => {
+  if (!gameStarted) return;
+  gameStarted = false;
+  startText.visible = true;
+
+  console.log("GAME STOP");
+
+  ball.setVelocity(0, 0);
+
+  ball.x = centerX;
+  ball.y = centerY;
+};
+
 function update() {
-  if (!gameStarted) this.input.keyboard.on("keydown-A", () => startGame());
-  control_paddle(paddle1, this.input.y);
-  if (paddle2.x - ball.x < width / 4) control_paddle(paddle2, ball.y);
+  // console.log('hi');
+  if (!started) {
+    this.input.keyboard.on("keydown-SPACE", () => startGame());
+  } else {
+    this.input.keyboard.on("keydown-ESC", () => stopGame());
+    control_paddle(paddle1, this.input.y);
+    if (paddle2.x - ball.x < width / 4) control_paddle(paddle2, ball.y); // arbitrary npc
+
+    // lose win
+    if (ball.x < 32) {
+      startText.text = "you lost";
+      stopGame();
+    } else if (ball.x > width - 32) {
+      startText.text = "you won";
+      stopGame();
+    }
+  }
 }
