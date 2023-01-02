@@ -1,5 +1,4 @@
 import { Game as GameType } from "phaser";
-// import pongScene from "./scenes/scene";
 
 import React, { useEffect, useState } from "react";
 
@@ -10,15 +9,14 @@ const Game = () => {
     const initPhaser = async () => {
       const Phaser = await import("phaser");
       const { default: pongScene } = await import("./scenes/scene");
-      const phaserGame = new Phaser.Game({
+
+      const config = {
         type: Phaser.AUTO,
         parent: "phaser-game",
 
         scale: {
           mode: Phaser.Scale.FIT,
-          autoCenter: Phaser.Scale.CENTER_BOTH, // not working anymore; "Centering is achieved by setting
-          // the margin left and top properties of the game canvas,
-          // and does not factor in any other CSS styles you may have applied."
+          autoCenter: Phaser.Scale.CENTER_BOTH,
           width: 800,
           height: 600,
         },
@@ -26,7 +24,9 @@ const Game = () => {
           default: "arcade",
         },
         scene: [pongScene],
-      });
+      };
+
+      const phaserGame = new Phaser.Game(config);
 
       setGame(phaserGame);
     };
