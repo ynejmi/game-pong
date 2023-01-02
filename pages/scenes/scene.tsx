@@ -50,7 +50,7 @@ export default class pongScene extends Scene {
     this.paddleLowerLimit = this.height - this.paddleUpperLimit;
 
     // console.log(this.paddleUpperLimit, );
-    // console.log(this.paddleUpperLimit, this.paddleLowerLimit);
+    console.log(this.paddleUpperLimit, this.paddleLowerLimit);
 
     // style: Phaser.GameObjects.TextStyle = { fontSize: "80px", align: "center" };
 
@@ -61,10 +61,10 @@ export default class pongScene extends Scene {
       })
       .setOrigin(0.5);
 
-    // console.log(this.startText);
+    console.log(this.startText);
   }
 
-  control_paddle = (paddle: Phaser.Physics.Arcade.Sprite, y: number) => {
+  control_paddle = (paddle, y) => {
     if (!y) return;
     else if (y < this.paddleUpperLimit) paddle.y = this.paddleUpperLimit;
     else if (y > this.paddleLowerLimit) paddle.y = this.paddleLowerLimit;

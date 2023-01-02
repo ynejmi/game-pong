@@ -3,7 +3,7 @@ import { Game as GameType } from "phaser";
 
 import React, { useEffect, useState } from "react";
 
-function Game() {
+const Game = () => {
   const [game, setGame] = useState<GameType>();
 
   useEffect(() => {
@@ -15,7 +15,7 @@ function Game() {
         parent: "phaser-game",
 
         scale: {
-        //   mode: Phaser.Scale.FIT,
+          mode: Phaser.Scale.FIT,
           autoCenter: Phaser.Scale.CENTER_BOTH, // not working anymore; "Centering is achieved by setting
           // the margin left and top properties of the game canvas,
           // and does not factor in any other CSS styles you may have applied."
@@ -28,7 +28,7 @@ function Game() {
         scene: [pongScene],
       });
 
-	  setGame(phaserGame);
+      setGame(phaserGame);
     };
 
     initPhaser();
