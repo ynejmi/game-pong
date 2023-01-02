@@ -1,0 +1,1 @@
+self.__REACT_LOADABLE_MANIFEST={"game.tsx -> ./scenes/scene":{"id":"game.tsx -> ./scenes/scene","files":["static/chunks/pages_scenes_scene_tsx.js"]},"game.tsx -> phaser":{"id":"game.tsx -> phaser","files":["static/chunks/node_modules_phaser_dist_phaser_js.js"]}}
