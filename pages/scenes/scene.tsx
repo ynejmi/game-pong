@@ -1,35 +1,37 @@
-/** @type {import("../typings/phaser")} */
 import { Scene } from "phaser";
 
 export default class pongScene extends Scene {
-  preload() {
-    this.load.image("paddle", "assets/paddle.png");
-    this.load.image("ball", "assets/small_ball.png");
-  }
-
   paddle1: Phaser.Physics.Arcade.Sprite;
   paddle2: Phaser.Physics.Arcade.Sprite;
   ball: Phaser.Physics.Arcade.Sprite;
+
   startText: Phaser.GameObjects.Text;
   gameStarted: boolean = false;
+
   width: number;
   height: number;
+
   centerY: number;
   centerX: number;
+
   paddleUpperLimit: number;
   paddleLowerLimit: number;
 
-  create_paddle = (x: number, y: number) => {
+  createPaddle = (x: number, y: number) => {
     const paddle = this.physics.add
       .sprite(x, y, "paddle")
       .setImmovable(true)
       .setScale(0.5);
     // .setOrigin(0.5);
-    this.physics.add.collider(this.ball, paddle, (ball) =>
-      console.log(ball.body.velocity.x)
+    this.physics.add.collider(this.ball, paddle
     );
     return paddle;
   };
+
+  preload() {
+    this.load.image("paddle", "assets/paddle.png");
+    this.load.image("ball", "assets/small_ball.png");
+  }
 
   create() {
     this.width = this.game.canvas.width;
@@ -44,15 +46,14 @@ export default class pongScene extends Scene {
       .setBounce(1.01, 1);
     // .setOrigin(0.5);
 
-    this.paddle1 = this.create_paddle(48, this.centerY);
-    this.paddle2 = this.create_paddle(this.width - 48, this.centerY);
+    this.paddle1 = this.createPaddle(48, this.centerY);
+    this.paddle2 = this.createPaddle(this.width - 48, this.centerY);
 
     this.paddleUpperLimit = this.paddle1.displayHeight / 2;
     this.paddleLowerLimit = this.height - this.paddleUpperLimit;
 
-	// console.log(this.paddleUpperLimit, );
-	console.log(this.paddleUpperLimit, this.paddleLowerLimit);
-	
+    // console.log(this.paddleUpperLimit, );
+    // console.log(this.paddleUpperLimit, this.paddleLowerLimit);
 
     // style: Phaser.GameObjects.TextStyle = { fontSize: "80px", align: "center" };
 
@@ -63,10 +64,10 @@ export default class pongScene extends Scene {
       })
       .setOrigin(0.5);
 
-    console.log(this.startText);
+    // console.log(this.startText);
   }
 
-  control_paddle = (paddle, y) => {
+  controlPaddle = (paddle: Phaser.Physics.Arcade.Sprite, y: number) => {
     if (!y) return;
     else if (y < this.paddleUpperLimit) paddle.y = this.paddleUpperLimit;
     else if (y > this.paddleLowerLimit) paddle.y = this.paddleLowerLimit;
@@ -101,9 +102,9 @@ export default class pongScene extends Scene {
       this.input.keyboard.on("keydown-SPACE", () => this.startGame());
     } else {
       this.input.keyboard.on("keydown-ESC", () => this.stopGame());
-      this.control_paddle(this.paddle1, this.input.y);
+      this.controlPaddle(this.paddle1, this.input.y);
       if (this.paddle2.x - this.ball.x < this.width / 4)
-        this.control_paddle(this.paddle2, this.ball.y); // arbitrary npc
+        this.controlPaddle(this.paddle2, this.ball.y); // arbitrary npc
 
       // lose win
       if (this.ball.x < 32) {
